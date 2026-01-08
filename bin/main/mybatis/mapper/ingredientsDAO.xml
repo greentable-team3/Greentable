@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.greentable.DAO.ingredientsDAO">
+	<select id="ilistDao" resultType="com.greentable.DTO.ingredientsDTO">
+		select * from ingredients
+	</select>
+	<select id="ieditlistDao" resultType="com.greentable.DTO.ingredientsDTO">
+		select * from ingredients where i_no=#{param1}
+	</select>
+	<insert id="iinsertDao">
+		insert into ingredients values(ingredients_seq.nextval,#{i_name},#{i_price},#{i_origin})
+	</insert>
+	<update id="iupdateDao">
+		update ingredients set i_price=#{i_price}, i_origin=#{i_origin}  where i_no=#{i_no}
+	</update>
+	<delete id="ideleteDao">
+		delete from ingredients where i_no=#{param1}
+	</delete>
+</mapper>
