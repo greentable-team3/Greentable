@@ -27,5 +27,6 @@
 		</tr>
 	</c:forEach>
 	</table>
+	<a href="/iinsertForm">재료등록</a>
 </body>
 </html>
