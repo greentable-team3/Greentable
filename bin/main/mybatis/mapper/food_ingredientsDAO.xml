@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.greentable.DAO.food_ingredientsDAO">
+	<insert id="fiinsertDao">
+        INSERT INTO food_ingredients (f_no, i_no)
+        VALUES (#{f_no}, #{i_no})
+    </insert>
+    <delete id="fideleteDao">
+        DELETE FROM food_ingredients 
+        WHERE f_no = #{f_no} AND i_no = #{i_no}
+    </delete>
+    <select id="fiselectDao" resultType="com.greentable.DTO.ingredientsDTO">
+        SELECT i.i_no, i.i_name, i.i_price, i.i_origin
+        FROM ingredients i
+        JOIN food_ingredients fi ON i.i_no = fi.i_no
+        WHERE fi.f_no = #{f_no}
+    </select>
+    <select id="filistDao" resultType="com.greentable.DTO.food_ingredientsDTO">
+	    SELECT 
+	        fi.f_no, 
+	        f.f_name, 
+	        fi.i_no, 
+	        i.i_name
+	    FROM food_ingredients fi
+	    JOIN food f ON fi.f_no = f.f_no
+	    JOIN ingredients i ON fi.i_no = i.i_no
+	    ORDER BY fi.f_no ASC
+	</select>
+</mapper>
