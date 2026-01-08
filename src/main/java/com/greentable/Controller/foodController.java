@@ -3,14 +3,17 @@ package com.greentable.Controller;
 import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.greentable.DAO.foodDAO;
-import com.greentable.DAO.food_ingredientsDAO;
 import com.greentable.DTO.foodDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class foodController {
 	@Autowired
 	foodDAO dao;
-	
-	@Autowired
-	food_ingredientsDAO fidao;
-	
+
 	@RequestMapping("/") // 메인화면
 	public String root() {
 		return "home";
@@ -62,12 +62,11 @@ public class foodController {
 	}
 	
 	@RequestMapping("/fdetail")   // 레시피 상세보기 
-	public String fdetail(@RequestParam("f_no") int f_no, HttpServletRequest request, Model model, foodDTO dto) {
+	public String fdetail(HttpServletRequest request, Model model, foodDTO dto) {
+		int f_no = Integer.parseInt(request.getParameter("f_no"));
 		model.addAttribute("detail", dao.fdetailDao(dto));
-		model.addAttribute("ingrelist", fidao.fiselectDao(f_no));
 		return "user/food/fdetail";
 	}
-	
 	
 	@RequestMapping("/fdelete")  // 레시피 삭제
 	public String fdelete(HttpServletRequest request, foodDTO dto) {
@@ -83,7 +82,7 @@ public class foodController {
 	}
 	
 	@RequestMapping("/fupdate")  // 레시피 수정
-	public String fupdate(HttpServletRequest request, foodDTO dto) {
+	public String pupdate(HttpServletRequest request, foodDTO dto) {
 		int f_no = Integer.parseInt(request.getParameter("f_no"));
 		dao.fupdateDao(dto);
 		return "redirect:/foodlist";

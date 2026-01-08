@@ -8,10 +8,6 @@
 </head>
 <body>
 	<a href ="/finsertForm">레시피등록</a> 
-	<a href ="/foodlist">레시피목록</a><br>
-	<a href ="/iinsertForm">재료등록</a>
-	<a href ="/ilist">재료목록</a><br>
-	<a href ="/fiinsertForm">추합번호등록</a>
-	<a href ="/filist">추합번호목록</a><br>
+	<a href ="/foodlist">레시피목록</a>
 </body>
 </html>

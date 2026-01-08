@@ -4,13 +4,13 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.greentable.DAO.foodDAO">
 	<select id="flistDao" resultType="com.greentable.DTO.foodDTO">
-		select f_no, f_imgfilename, f_name from food order by f_no
+		select f_no, f_imgfilename, f_name from food order by f_no asc
+	</select>
+	<select id="fdetailDao" resultType="com.greentable.DTO.foodDTO">
+		select * from food where f_no= #{f_no}
 	</select>
 	<select id="feditDao" resultType="com.greentable.DTO.foodDTO">
 		select * from food where f_no=#{param1}
-	</select>
-	<select id="fdetailDao" resultType="com.greentable.DTO.foodDTO">
-	    SELECT * from food WHERE f_no = #{f_no}
 	</select>
 	<insert id="finsertDao">
 		insert into food(f_no,f_name,f_imgfilename,f_category,f_recipe,f_add, f_ingredient,f_kcalfilename,f_love,f_nolove)

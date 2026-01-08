@@ -18,14 +18,14 @@
         WHERE fi.f_no = #{f_no}
     </select>
     <select id="filistDao" resultType="com.greentable.DTO.food_ingredientsDTO">
-	    SELECT 
-	        fi.f_no, 
-	        f.f_name, 
-	        fi.i_no, 
-	        i.i_name
-	    FROM food_ingredients fi
-	    JOIN food f ON fi.f_no = f.f_no
-	    JOIN ingredients i ON fi.i_no = i.i_no
-	    ORDER BY fi.f_no ASC
-	</select>
+    SELECT 
+        fi.f_no, 
+        f.f_name, 
+        fi.i_no, 
+        i.i_name
+    FROM food_ingredients fi
+    JOIN food f ON fi.f_no = f.f_no
+    JOIN ingredients i ON fi.i_no = i.i_no
+    ORDER BY fi.f_no ASC
+</select>
 </mapper>

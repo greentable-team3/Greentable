@@ -110,7 +110,6 @@ function check(){
 		<td colspan ="2">
 			<button type="button" value="레시피등록" onclick="check()">레시피등록</button>
 			<button type="reset" value="작성취소" >작성취소</button>
-			<button type="reset" value="등록취소" onclick="history.back()">등록취소</button>
 		</td>
 	</tr>	
 	</table>	

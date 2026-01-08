@@ -18,6 +18,5 @@
 	</c:forEach>	
 	</tr>
 	</table>
-	<a href ="/finsertForm">레시피등록</a> 
 </body>
 </html>
