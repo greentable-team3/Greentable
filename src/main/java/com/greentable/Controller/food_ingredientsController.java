@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.greentable.DAO.foodDAO;
 import com.greentable.DAO.food_ingredientsDAO;
@@ -24,7 +25,7 @@ public class food_ingredientsController {
 	@RequestMapping("/fiinsertForm")
 	public String insertForm(Model model) {
 	    // 등록 시 선택할 수 있도록 전체 리스트를 보냅니다.
-	    model.addAttribute("foodList", fDao.flistDao()); 
+	    model.addAttribute("foodList", fDao.flistDao(null)); 
 	    model.addAttribute("ingreList", iDao.ilistDao());
 	    return "admin/fiinsertForm";
 	}
@@ -49,4 +50,5 @@ public class food_ingredientsController {
 		dao.fideleteDao(f_no, i_no);
 		return "redirect:/filist";
 	}
+	
 }

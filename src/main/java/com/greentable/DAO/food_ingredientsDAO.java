@@ -21,4 +21,5 @@ public interface food_ingredientsDAO {
     
     // 4. 음식의 모든 재료 목록 조회
     public List<food_ingredientsDTO> filistDao();
+    
 }

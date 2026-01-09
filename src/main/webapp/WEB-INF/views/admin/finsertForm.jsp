@@ -9,6 +9,7 @@
 function check(){
 	
 	let f_name = document.food.f_name;
+	let f_kind = document.food.f_kind;
 	let f_category = document.food.f_category;
 	let f_add = document.food.f_add;
 	let f_ingredient = document.food.f_ingredient;
@@ -23,8 +24,15 @@ function check(){
 		return false;
 	}
 	
+	if(!f_kind.value){
+		alert("음식분류를 선택하세요.");
+		f_kind.value = "";
+		f_kind.focus();
+		return false;
+	}
+	
 	if(!f_category.value){
-		alert("카테고리를 설정하세요.");
+		alert("카테고리를 선택하세요.");
 		f_category.value = "";
 		f_category.focus();
 		return false;
@@ -78,6 +86,16 @@ function check(){
 	<tr>
 		<td>레시피명</td>
 		<td><input type="text" name="f_name"></td>
+	</tr>
+	<tr>
+		<td>분류</td>
+		<td>
+			<input type="radio" name="f_kind" id="diet" value="diet">
+			<label for="diet">다이어트식단</label>
+			
+			<input type="radio" name="f_kind" id="protein" value="protein">
+			<label for="protein">단백질식단</label>
+		</td>
 	</tr>
 	<tr>
 		<td>카테고리</td>

@@ -4,7 +4,13 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.greentable.DAO.foodDAO">
 	<select id="flistDao" resultType="com.greentable.DTO.foodDTO">
-		select f_no, f_imgfilename, f_name from food order by f_no
+	    SELECT * FROM food
+	    <where>
+	        <if test="f_kind != null and f_kind != ''">
+	            AND f_kind = #{f_kind}
+	        </if>
+	    </where>
+	    ORDER BY f_no DESC
 	</select>
 	<select id="feditDao" resultType="com.greentable.DTO.foodDTO">
 		select * from food where f_no=#{param1}
@@ -13,9 +19,8 @@
 	    SELECT * from food WHERE f_no = #{f_no}
 	</select>
 	<insert id="finsertDao">
-		insert into food(f_no,f_name,f_imgfilename,f_category,f_recipe,f_add, f_ingredient,f_kcalfilename,f_love,f_nolove)
-		 values(food_seq.nextval,#{f_name},#{f_imgfilename},#{f_category},#{f_recipe},#{f_add},#{f_ingredient},#{f_kcalfilename},#{f_love},
-		 		#{f_nolove})
+		insert into food(f_no,f_name,f_imgfilename,f_category,f_recipe,f_add, f_ingredient,f_kcalfilename,f_love, f_kind)
+		 values(food_seq.nextval,#{f_name},#{f_imgfilename},#{f_category},#{f_recipe},#{f_add},#{f_ingredient},#{f_kcalfilename},#{f_love}, #{f_kind})
 	</insert>
 	<update id="fupdateDao">
 		update food set f_add=#{f_add}, f_ingredient=#{f_ingredient}, f_recipe=#{f_recipe}
@@ -24,4 +29,7 @@
 	<delete id="fdeleteDao">
 		delete from food where f_no = #{param1}
 	</delete>
+	<update id="updateLove">
+	    UPDATE food SET f_love = f_love + 1 WHERE f_no = #{f_no}
+	</update>
 </mapper>

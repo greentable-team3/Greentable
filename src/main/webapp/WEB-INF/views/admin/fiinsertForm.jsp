@@ -11,6 +11,7 @@ function check(){
 	document.food_ingredients.submit();
 }
 </script>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 </head>
 <body>
 	<h1>음식-재료 연결 등록</h1>

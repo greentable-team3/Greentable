@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>재료목록</title>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 </head>
 <body>
 	<h1>재료목록</h1>
@@ -27,5 +28,6 @@
 		</tr>
 	</c:forEach>
 	</table>
+	<a href="/iinsertForm" class="btn btn-primary">재료등록</a>
 </body>
 </html>

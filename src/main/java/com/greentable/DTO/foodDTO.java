@@ -10,6 +10,7 @@ import lombok.Data;
 public class foodDTO {
 	private int f_no;
 	private String f_name;
+	private String f_kind;
 	private String f_category;
 	private String f_add;
 	private String f_ingredient;

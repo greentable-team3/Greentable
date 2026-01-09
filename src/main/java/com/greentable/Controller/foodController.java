@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.greentable.DAO.foodDAO;
@@ -55,11 +56,21 @@ public class foodController {
 	}
 	
 	
+	
 	@RequestMapping("/foodlist") // 레시피 목록
-	public String foodlist(Model model) {
-		model.addAttribute("list", dao.flistDao());
-		return "user/food/foodlist";
+	public String foodlist(@RequestParam(value="f_kind", required=false) String f_kind, Model model) {
+	    
+	    // 1. 파라미터(f_kind)를 DAO의 메서드에 인자로 전달합니다.
+	    // 2. 만약 f_kind가 null이면 전체 리스트를, 값이 있으면 해당 분류만 가져오게 설계합니다.
+	    model.addAttribute("list", dao.flistDao(f_kind));
+	    
+	    // 선택된 카테고리를 뷰에서 알 수 있게 다시 모델에 담아주면 좋습니다 (선택 표시용)
+	    model.addAttribute("selectedKind", f_kind);
+	    
+	    return "user/food/foodlist";
 	}
+	
+	
 	
 	@RequestMapping("/fdetail")   // 레시피 상세보기 
 	public String fdetail(@RequestParam("f_no") int f_no, HttpServletRequest request, Model model, foodDTO dto) {
@@ -89,6 +100,11 @@ public class foodController {
 		return "redirect:/foodlist";
 	}
 	
+	@RequestMapping("/loveUpdate") // 좋아요 기능
+	@ResponseBody
+	public void loveUpdate(@RequestParam("f_no") String f_no) {
+	    dao.updateLove(f_no);
+	}
 	
 }
 
