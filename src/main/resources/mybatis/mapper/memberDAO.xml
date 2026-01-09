@@ -2,11 +2,11 @@
 <!DOCTYPE mapper 
 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.study.springboot.dao.memberDAO">
-    <select id="getMember" parameterType="int" resultType="com.study.springboot.dto.memberDTO">
+<mapper namespace="com.greentable.DAO.memberDAO">
+    <select id="getMember" parameterType="int" resultType="com.greentable.DTO.memberDTO">
         SELECT * FROM member WHERE m_no = #{m_no}
     </select>
-	<select id="listDao" resultType="com.study.springboot.dto.memberDTO">
+	<select id="listDao" resultType="com.greentable.DTO.memberDTO">
 		select * from member
 	</select>
 	<insert id="SignupDao">
@@ -20,13 +20,19 @@
 	<delete id="DeleteMemberDao">
 		delete from member where m_no=#{param1}
 	</delete> 
-	<select id="findByMid" resultType="com.study.springboot.dto.memberDTO">
+	<select id="findByMid" resultType="com.greentable.DTO.memberDTO">
 		select * from member where m_id=#{m_id}
 	</select>
-	<select id="getMemberByIdDao" parameterType="string" resultType="com.study.springboot.dto.memberDTO">
+	<select id="getMemberByIdDao" resultType="com.greentable.DTO.memberDTO">
     	select * from member where m_id = #{m_id}
 	</select>
 	<select id="idCheck" parameterType="String" resultType="int">
 	    select count(*) from member where m_id = #{m_id}
 	</select>
+	<select id="findAllByEmail" resultType="com.greentable.DTO.memberDTO" parameterType="java.lang.String">
+    	SELECT * FROM member WHERE m_email = #{m_email}
+	</select>
+	<update id="updatePassword">
+    	UPDATE member SET m_passwd = #{m_passwd} WHERE m_id = #{m_id}
+	</update>
 </mapper>

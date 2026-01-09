@@ -27,8 +27,7 @@
 	    <div>
 	        <c:choose>
 	            <c:when test="${not empty pageContext.request.userPrincipal}">
-	                <span class="me-3">${pageContext.request.userPrincipal.name} 님</span>
-	                
+	                <span class="me-3">${pageContext.request.userPrincipal.name} 님</span>	                
 	                <sec:authorize access="hasRole('ADMIN')">| 관리자 계정
 				    <a href="/admin/list" class="btn btn-outline-secondary btn-sm ms-2">
 				        회원 목록

@@ -1,4 +1,4 @@
-package com.study.springboot.service;
+package com.greentable.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -8,8 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.study.springboot.dao.memberDAO;
-import com.study.springboot.dto.memberDTO;
+import com.greentable.DAO.memberDAO;
+import com.greentable.DTO.memberDTO;
+
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,13 +24,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         memberDTO dto = dao.findByMid(username);
         if (dto == null) {
-            throw new UsernameNotFoundException("사용자 없음");
+            throw new UsernameNotFoundException("�궗�슜�옄 �뾾�쓬");
         }
 
         return User.builder()
                 .username(dto.getM_id())
                 .password(dto.getM_passwd())
-                .roles(dto.getM_authority()) // DB에 'USER' 또는 'ADMIN'
+                .roles(dto.getM_authority()) // DB�뿉 'USER' �삉�뒗 'ADMIN'
                 .build();
     }
 }

@@ -39,8 +39,8 @@ dependencies {
 
     /* === Security === */
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-taglibs'
-    implementation 'org.springframework.security:spring-security-crypto'
+    implementation 'org.springframework.security:spring-security-taglibs:6.2.3'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     /* === Lombok === */
     compileOnly 'org.projectlombok:lombok'
@@ -51,6 +51,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
+
+eclipse.wtp.facet {
+	facet name: 'jst.web', version: '5.0'
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()

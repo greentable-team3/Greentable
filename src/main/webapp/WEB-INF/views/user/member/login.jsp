@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,6 +45,9 @@
                 <input type="submit" value="로그인" class="btn btn-primary">
                 <button type="button" class="btn btn-secondary" onclick="location.href='/signup'">회원가입</button>
             </div>
+        	<div class="d-grid gap-2 mt-4">
+        		<button type="button" class="btn btn-success" value = "아이디 찾기" onclick="location.href='/findIdForm'">아이디 찾기</button>
+        	</div>
         </form>
     </div>
 </div>
