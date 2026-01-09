@@ -339,24 +339,25 @@ import jakarta.servlet.http.HttpSession;
 		        return "user/member/findIdForm";
 		    }
 
-		    // 사용자님이 하셨던 *** 마스킹 처리 로직
+		    //  *** 마스킹 처리 로직
 		    for (memberDTO m : list) {
 		        String rawId = m.getM_id();
-		        // 여기서 바로 마스킹해서 리스트에 다시 세팅하셨죠
+		        // 여기서 바로 마스킹해서 리스트에 다시 세팅
 		        m.setM_id(rawId.substring(0, 3) + "***"); 
 		    }
 
 		    model.addAttribute("idList", list);
-		    // [중요] JSP의 c:if 조건을 위해 필요한 변수
+		    // JSP의 c:if 조건을 위해 필요한 변수
 		    model.addAttribute("foundId", true); 
 
 		    return "user/member/findIdForm";
 		}
 
 		@PostMapping("/resetPassword")
-		public String resetPassword(@RequestParam("m_id") String m_id,HttpSession session,Model model) {
-
+		public String resetPassword(@RequestParam("m_id") String m_id,HttpSession session,Model model,HttpServletRequest request) {
+				
 		    memberDTO dto = dao.getMemberByIdDao(m_id);
+
 
 		    if (dto == null) {
 		        model.addAttribute("msg", "아이디가 존재하지 않습니다.");
@@ -367,7 +368,7 @@ import jakarta.servlet.http.HttpSession;
 		    session.setAttribute("resetId", m_id);
 
 		    // 임시 비밀번호 생성
-		    String tempPw = UUID.randomUUID().toString().substring(0, 8);
+		    String tempPw = UUID.randomUUID().toString().substring(0, 8); // 비밀번호 8자리 이하
 		    String encoded = passwordEncoder.encode(tempPw);
 
 		    dao.updatePassword(m_id, encoded);
@@ -376,5 +377,10 @@ import jakarta.servlet.http.HttpSession;
 		    session.setAttribute("tempPw", tempPw);
 
 		    return "redirect:/resultPassword";
+		}
+		
+		@PostMapping("/resultPassword")
+		public String resultPassword() {
+			return "user/member/resultPassword";
 		}
 	}

@@ -24,10 +24,9 @@ public class WebSecurityConfig {
 			.cors((cors) -> cors.disable()) // CORS ?��꾪솢�꽦�솕
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-					.requestMatchers("/","/main","/write","/login","/updateForm","/signup","/passwordCheckForm","/findIdForm","/findId","/idCheck","/resetPassword","/resultPassword","/css/**","/js/**","/images/**","/user/**").permitAll()
-					.requestMatchers("/product/**").hasAnyRole("USER","ADMIN")
+					.requestMatchers("/","/main","/write","/login","/updateForm","/signup","/passwordCheckForm","/findIdForm","/findId",
+							"/idCheck","/resetPassword","/resultPassword","/css/**","/js/**","/images/**","/user/**").permitAll()
 					.requestMatchers("/admin/**").hasAnyRole("ADMIN")
-
 			);
 		
 
