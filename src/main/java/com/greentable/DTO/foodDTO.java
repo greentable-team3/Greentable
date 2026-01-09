@@ -16,7 +16,6 @@ public class foodDTO {
 	private String f_ingredient;
 	private String f_recipe;
 	private int f_love;
-	private int f_nolove;
 	private MultipartFile f_kcal;
 	private String f_kcalfilename;
 	private MultipartFile f_img;

@@ -11,7 +11,19 @@
 </head>
 <script>
 	function addBasket(btn, i_no, f_no) {
-	    // 1. 해당 버튼이 속한 행에서 수량(b_count) 가져오기
+		
+		// 1. 로그인 여부 확인 (서버에서 넘겨준 세션 값 활용)
+	    // 아래 'sessionScope.m_no'는 사용 중인 엔진(JSP 등)의 문법에 맞춰 수정하세요.
+	   const loginId = "${sessionScope.loginId}";
+
+		// m_id에 값이 없으면(false라면) 실행
+		if (!m_id) {
+		    alert("로그인 후 이용 가능합니다.");
+		    location.href = "/loginForm";
+		    return;
+		}
+		
+	    // 1-1. 해당 버튼이 속한 행에서 수량(b_count) 가져오기
 	    const row = btn.closest('tr');
 	    const b_count = row.querySelector('select[name="b_count"]').value;
 	

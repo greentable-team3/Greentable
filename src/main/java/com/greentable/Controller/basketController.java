@@ -19,9 +19,17 @@ public class basketController {
 	basketDAO dao;
 	
 	@RequestMapping("/cartlist") // 장바구니 목록
-	public String cartlist(Model model) {
-		model.addAttribute("list", dao.blistDao());
-		
+	public String cartlist(HttpSession session, Model model) {
+		// 1. 세션에서 로그인한 사용자의 정보(예: m_no 또는 loginId)를 가져옵니다.
+	    // 세션에 저장할 때 사용한 이름 그대로 가져와야 합니다. (m_no라고 가정)
+	    Object loginInfo = session.getAttribute("m_no"); 
+
+	    // 2. 로그인 정보가 없으면 로그인 페이지로 리다이렉트 시킵니다.
+	    if (loginInfo == null) {
+	        return "redirect:/loginForm"; 
+	    }
+	    
+		model.addAttribute("list", dao.blistDao(loginInfo));
 		return "user/basket/cartlist";
 	}
 	
