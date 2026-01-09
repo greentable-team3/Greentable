@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!-- id 옆에 '관리자'라는 글자 띄우고 회원목록에 접근할 수 있도록 security tagilb 추가 -->
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%-- <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,7 +32,7 @@
 				<!-- 관리자 권한을 가지고 있다면 ~님 "| 관리자 계정" 출력-->
                 <sec:authorize access="hasRole('ADMIN')"> 
                 	| 관리자 계정
-                	<!--관리자 계정만 회원 목록에 access 가능 -->	
+					<!-- 관리자 계정만 회원 목록에 access 가능	 -->
 				    <a href="/admin/list" class="btn btn-outline-secondary btn-sm ms-2">
 				        회원 목록
 				    </a>
@@ -41,7 +41,6 @@
                     <input type="submit" class="btn btn-outline-danger btn-sm" value="로그아웃">
                 </form>
             </c:when>
-	
             <c:otherwise>
                 <a href="/login" class="btn btn-outline-primary btn-sm">로그인</a>
             </c:otherwise>

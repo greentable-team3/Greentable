@@ -1,4 +1,4 @@
-package com.study.springboot.auth;
+package com.greentable.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import jakarta.servlet.DispatcherType;
 @Configuration
 public class WebSecurityConfig {
 
-	// 비밀번호 암호화
+	// ?��꾨�踰덊?�� �븫�샇�솕
 	@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -20,36 +20,35 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-		http.csrf((csrf) -> csrf.disable()) // CSRF 보호 비활성화
-			.cors((cors) -> cors.disable()) // CORS 비활성화
+		http.csrf((csrf) -> csrf.disable()) // CSRF 蹂댄?�� ?��꾪솢�꽦�솕
+			.cors((cors) -> cors.disable()) // CORS ?��꾪솢�꽦�솕
 			.authorizeHttpRequests(request -> request
-					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll() // 내부 포워드 요청 허용
-					.requestMatchers("/","/main","/write","/login","/updateForm","/signup","/passwordCheckForm","/css/**",
-							"/js/**","/images/**","/idCheck").permitAll() // 정적 리소스, member 폴더의 페이지는 모두에게 허용
-					.requestMatchers("/product/**").hasAnyRole("USER","ADMIN") // product 폴더는 'USER', 'ADMIN' 권한을 가진 사람에게만 접근 허용
-					.requestMatchers("/admin/**").hasAnyRole("ADMIN") // admin 폴더의 페이지는 'ADMIN'만 권한을 가진 사람에게만 접근 허용
-					.anyRequest().authenticated() // 나머지는 모두 인증 필요
+					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+					.requestMatchers("/","/main","/write","/login","/updateForm","/signup","/passwordCheckForm","/findIdForm","/findId","/idCheck","/resetPassword","/resultPassword","/css/**","/js/**","/images/**","/user/**").permitAll()
+					.requestMatchers("/product/**").hasAnyRole("USER","ADMIN")
+					.requestMatchers("/admin/**").hasAnyRole("ADMIN")
+
 			);
 		
 
 
 		
-		// 로그인
+		// 濡쒓?���씤
 		http.formLogin((formLogin) -> formLogin
-				.loginPage("/login") // 기본값  : /login
+				.loginPage("/login") // 湲곕?��媛�  : /login
 				.loginProcessingUrl("/j_spring_security_check")
-				.failureUrl("/login?error=true") //기본값 : /login?error 로그인 에러 페이지
+				.failureUrl("/login?error=true") //湲곕?��媛� : /login?error 濡쒓?���씤 �뿉�윭 �럹�씠吏�
 				.usernameParameter("j_username")
 				.passwordParameter("j_password")
 				.defaultSuccessUrl("/", true)
-				// .failureUrl("/login?error") 기본값 : login?error
+				// .failureUrl("/login?error") 湲곕?��媛� : login?error
 				.permitAll()
 				);
 		
-		// 로그아웃
+		// 濡쒓?���븘�썐
 		http.logout((logout) -> logout		
 		.logoutUrl("/logout")
-		.logoutSuccessUrl("/") // 로그아웃 시 홈화면(/)으로 회귀
+		.logoutSuccessUrl("/") // 濡쒓?���븘�썐 �떆 �솃�솕硫�(/)�쑝濡� �쉶洹�
 		.permitAll()
 		);
 		return http.build();

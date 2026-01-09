@@ -1,2 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/main/java/com/greentable/Controller/memberController.java=UTF-8
+encoding//src/main/java/com/greentable/DAO/memberDAO.java=UTF-8
+encoding//src/main/java/com/greentable/auth/WebSecurityConfig.java=UTF-8
+encoding//src/main/java/com/greentable/service/CustomUserDetailsService.java=UTF-8
 encoding//src/main/resources/application.properties=UTF-8
+encoding//src/main/resources/mybatis/mapper/memberDAO.xml=UTF-8
+encoding//src/main/webapp/WEB-INF/views/admin/adminUpdateForm.jsp=UTF-8

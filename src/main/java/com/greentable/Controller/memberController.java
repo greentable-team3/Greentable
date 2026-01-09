@@ -1,8 +1,10 @@
-package com.study.springboot.controller;
+package com.greentable.Controller;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import com.study.springboot.dao.memberDAO;
-import com.study.springboot.dto.memberDTO;
+
+import com.greentable.DAO.memberDAO;
+import com.greentable.DTO.memberDTO;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-	@Controller
+@Controller
 	public class memberController {
 	@Autowired
 		memberDAO dao;
@@ -31,88 +36,93 @@ import jakarta.servlet.http.HttpServletResponse;
     @Autowired
     private PasswordEncoder passwordEncoder;
     
-    // 관리자 인증
+    // 愿�由ъ옄 �씤利�
     @Value("${admin.code}")
     private String adminCodeValue;
 
-	// 첫 화면
+	// 泥� �솕硫�
 	@RequestMapping("/")
 		public String root() {
-		return "member/main";
+		return "user/member/main";
 	}
 	
-	//회원 정보 입력
+	//�쉶�썝 �젙蹂� �엯�젰
 	@RequestMapping("/signup")
 		public String writeForm() {
-		return "member/signup";
+		return "user/member/signup";
 	}
 	
-	// 회원 정보 저장
+	@GetMapping("/findIdForm")
+	public String findIdForm() {
+		return "user/member/findIdForm";
+	}
+	
+	// �쉶�썝 �젙蹂� ���옣
 	@PostMapping("/write")
-		public String write(@ModelAttribute memberDTO dto,HttpServletRequest request,Model model) throws Exception { // 해당 메소드가 예외 처리가 된다면 아래 방법으로 처리해주세욥
-	    	MultipartFile file = dto.getM_image_file(); // DTO에서 이미지 파일(m_imge_file)을 꺼내서 'file'변수에 저장, 지금부턴 file이라는 변수가 이미지 파일(임시)
+		public String write(@ModelAttribute memberDTO dto,HttpServletRequest request,Model model) throws Exception { // �빐�떦 硫붿냼�뱶媛� �삁�쇅 泥섎━媛� �맂�떎硫� �븘�옒 諛⑸쾿�쑝濡� 泥섎━�빐二쇱꽭�슖
+	    	MultipartFile file = dto.getM_image_file(); // DTO�뿉�꽌 �씠誘몄� �뙆�씪(m_imge_file)�쓣 爰쇰궡�꽌 'file'蹂��닔�뿉 ���옣, 吏�湲덈��꽩 file�씠�씪�뒗 蹂��닔媛� �씠誘몄� �뙆�씪(�엫�떆)
 	    	
-	    	 // 이미지 파일 처리
-	          if (!file.isEmpty()) { //type이 'file'인 입력란에 공백이 없다면
-	        	// 해당 입력란에 입력된 이미지 파일을 저장할 경로(폴더)를 'uploadDir' 변수에 저장, images 폴더에 저장
+	    	 // �씠誘몄� �뙆�씪 泥섎━
+	          if (!file.isEmpty()) { //type�씠 'file'�씤 �엯�젰���뿉 怨듬갚�씠 �뾾�떎硫�
+	        	// �빐�떦 �엯�젰���뿉 �엯�젰�맂 �씠誘몄� �뙆�씪�쓣 ���옣�븷 寃쎈줈(�뤃�뜑)瑜� 'uploadDir' 蹂��닔�뿉 ���옣, images �뤃�뜑�뿉 ���옣
 	              Path uploadDir = Paths.get("C:\\Users\\KH\\Desktop\\Teamtproject\\src\\main\\resources\\static\\images");
-	              if (!Files.exists(uploadDir)) { // 만약 위의 경로가 존재 하지 않는다면 
-	                  Files.createDirectories(uploadDir); // 새로 폴더를 만들어주세욥
+	              if (!Files.exists(uploadDir)) { // 留뚯빟 �쐞�쓽 寃쎈줈媛� 議댁옱 �븯吏� �븡�뒗�떎硫� 
+	                  Files.createDirectories(uploadDir); // �깉濡� �뤃�뜑瑜� 留뚮뱾�뼱二쇱꽭�슖
 	              }
 
-	              String filename = file.getOriginalFilename(); // type이 file인 이미지 파일의 이름을 추출하여 'filename'이라는 변수에 저장
-	              Path filePath = uploadDir.resolve(filename); // 'uploadDir' 변수(경로) 뒤에 파일명을 합친 전체 경로를 'filePath'라는 변수에 저장
+	              String filename = file.getOriginalFilename(); // type�씠 file�씤 �씠誘몄� �뙆�씪�쓽 �씠由꾩쓣 異붿텧�븯�뿬 'filename'�씠�씪�뒗 蹂��닔�뿉 ���옣
+	              Path filePath = uploadDir.resolve(filename); // 'uploadDir' 蹂��닔(寃쎈줈) �뮘�뿉 �뙆�씪紐낆쓣 �빀移� �쟾泥� 寃쎈줈瑜� 'filePath'�씪�뒗 蹂��닔�뿉 ���옣
 	              Files.write(filePath, file.getBytes());
-	              // 이미지 파일(file 변수)의 크기 데이터를 이미지 파일이 저장된 전체 경로('filePath')에 저장, 그러면 filePath라는 경로에 실제 이미지 파일이 저장
-	              dto.setM_image(filename); // dto에는 파일명이 저장된'filename'변수만 저장
+	              // �씠誘몄� �뙆�씪(file 蹂��닔)�쓽 �겕湲� �뜲�씠�꽣瑜� �씠誘몄� �뙆�씪�씠 ���옣�맂 �쟾泥� 寃쎈줈('filePath')�뿉 ���옣, 洹몃윭硫� filePath�씪�뒗 寃쎈줈�뿉 �떎�젣 �씠誘몄� �뙆�씪�씠 ���옣
+	              dto.setM_image(filename); // dto�뿉�뒗 �뙆�씪紐낆씠 ���옣�맂'filename'蹂��닔留� ���옣
 	          }
 	    	
 	    
-		    // 비밀번호 암호화
+		    // 鍮꾨�踰덊샇 �븫�샇�솕
 		 	String encodedPassword = passwordEncoder.encode(dto.getM_passwd());
-	        // dto에 저장된 비밀번호 데이터(m_passwd)를 get으로 불러오고 암호화한 비밀번호 데이터를 'encodedPassword'라는 데이터에 저장
-		 	dto.setM_passwd(encodedPassword); // 암호화된 비밀번호 데이터(encodedPassword)를 dto에 저장
+	        // dto�뿉 ���옣�맂 鍮꾨�踰덊샇 �뜲�씠�꽣(m_passwd)瑜� get�쑝濡� 遺덈윭�삤怨� �븫�샇�솕�븳 鍮꾨�踰덊샇 �뜲�씠�꽣瑜� 'encodedPassword'�씪�뒗 �뜲�씠�꽣�뿉 ���옣
+		 	dto.setM_passwd(encodedPassword); // �븫�샇�솕�맂 鍮꾨�踰덊샇 �뜲�씠�꽣(encodedPassword)瑜� dto�뿉 ���옣
 	
-		 	// 관리자 코드 입력값 (임시)
+		 	// 愿�由ъ옄 肄붾뱶 �엯�젰媛� (�엫�떆)
 		    String inputAdminCode = request.getParameter("adminCode");
-		    // application.properties에 저장해놓은 관리자 코드(admin.code = f1234)를 'inputAdninCode'라는 변수에 저장
+		    // application.properties�뿉 ���옣�빐�넃�� 愿�由ъ옄 肄붾뱶(admin.code = f1234)瑜� 'inputAdninCode'�씪�뒗 蹂��닔�뿉 ���옣
 	
-		    // 기본 권한
+		    // 湲곕낯 沅뚰븳
 		    String authority = "USER";
-		    // 일반회원(USER)이라는 값을 'authority'라는 변수에 저장
+		    // �씪諛섑쉶�썝(USER)�씠�씪�뒗 媛믪쓣 'authority'�씪�뒗 蹂��닔�뿉 ���옣
 	
-		    // 관리자 코드 검증
-		    if (inputAdminCode != null && !inputAdminCode.isBlank()) { // 만약 'inputAdminCode'라는 변수가 null값이 아니고 공백도 존재하지 않는다면
+		    // 愿�由ъ옄 肄붾뱶 寃�利�
+		    if (inputAdminCode != null && !inputAdminCode.isBlank()) { // 留뚯빟 'inputAdminCode'�씪�뒗 蹂��닔媛� null媛믪씠 �븘�땲怨� 怨듬갚�룄 議댁옱�븯吏� �븡�뒗�떎硫�
 		        if (inputAdminCode.equals(adminCodeValue)) { 
-		        // 'inputAdnimCode' 변수와 사용자가 입력한 'adminCodeValue'(signup.jsp 파일에 name = 'adminCodeValue')가 같다면
-		            authority = "ADMIN"; // 'authority'라는 변수에 관리자(ADMIN)라는 값을 저장
+		        // 'inputAdnimCode' 蹂��닔�� �궗�슜�옄媛� �엯�젰�븳 'adminCodeValue'(signup.jsp �뙆�씪�뿉 name = 'adminCodeValue')媛� 媛숇떎硫�
+		            authority = "ADMIN"; // 'authority'�씪�뒗 蹂��닔�뿉 愿�由ъ옄(ADMIN)�씪�뒗 媛믪쓣 ���옣
 		        } else {
-		            model.addAttribute("msg", "관리자 인증 코드가 올바르지 않습니다.");
-		            // 그 외의 경우에는 "관리자 인증 코드가 올바르지 않습니다"라는 문구를 "msg"에 넣음
-		            return "member/signup"; // 다시 signup.jsp로 돌아가서 insert 막기, 이것을 안 하면 관리자 코드가 일치하지 않더라도 그냥 가입이 됨
+		            model.addAttribute("msg", "愿�由ъ옄 �씤利� 肄붾뱶媛� �삱諛붾Ⅴ吏� �븡�뒿�땲�떎.");
+		            // 洹� �쇅�쓽 寃쎌슦�뿉�뒗 "愿�由ъ옄 �씤利� 肄붾뱶媛� �삱諛붾Ⅴ吏� �븡�뒿�땲�떎"�씪�뒗 臾멸뎄瑜� "msg"�뿉 �꽔�쓬
+		            return "user/member/signup"; // �떎�떆 signup.jsp濡� �룎�븘媛��꽌 insert 留됯린, �씠寃껋쓣 �븞 �븯硫� 愿�由ъ옄 肄붾뱶媛� �씪移섑븯吏� �븡�뜑�씪�룄 洹몃깷 媛��엯�씠 �맖
 		        }
 		    }
 		    
 	
-		    // 'authority' 변수에 저장된 데이터(USER인지 ADMIN인지)를 memberDto에 m_authority에 저장
+		    // 'authority' 蹂��닔�뿉 ���옣�맂 �뜲�씠�꽣(USER�씤吏� ADMIN�씤吏�)瑜� memberDto�뿉 m_authority�뿉 ���옣
 		    dto.setM_authority(authority);
 	
-		    // dto에 있는 값을 최종적으로 signupDao 메서드를 통해서 DB에 저장
+		    // dto�뿉 �엳�뒗 媛믪쓣 理쒖쥌�쟻�쑝濡� signupDao 硫붿꽌�뱶瑜� �넻�빐�꽌 DB�뿉 ���옣
 		    dao.SignupDao(dto);
 		    
-		    // 홈 화면으로 회귀
+		    // �솃 �솕硫댁쑝濡� �쉶洹�
 		    return "redirect:/";
 	} 
 	
 	
-	// 회원 정보 조회
+	// �쉶�썝 �젙蹂� 議고쉶
 	@RequestMapping("/admin/list")
 	public String list(Model model) {
 		model.addAttribute("member", dao.listDao());
 		return "admin/list";
 	}
 	
-	// 회원 정보 삭제
+	// �쉶�썝 �젙蹂� �궘�젣
 	@RequestMapping("/delete")
 	public String delete(HttpServletRequest request){
 		int m_no = Integer.parseInt(request.getParameter("m_no"));
@@ -120,21 +130,22 @@ import jakarta.servlet.http.HttpServletResponse;
 		return "redirect:list";
 		}
 	
-    // 회원 정보 수정 폼
+    // �쉶�썝 �젙蹂� �닔�젙 �뤌
 	@RequestMapping("/updateForm")
 	public String updateForm(HttpServletRequest request, Model model) {
 		int m_no = Integer.parseInt(request.getParameter("m_no"));
 		model.addAttribute("update", dao.getMember(m_no));
-		return "member/updateForm";
+		return "user/member/updateForm";
 	}
+	
 
  
-	// 회원정보 수정
+	// �쉶�썝�젙蹂� �닔�젙
     @RequestMapping("/update")
     public String update(HttpServletRequest request, memberDTO dto) throws Exception {
     	MultipartFile file = dto.getM_image_file();
     	
-   	 // 이미지 파일 처리
+   	 // �씠誘몄� �뙆�씪 泥섎━
          if (!file.isEmpty()) {
              Path uploadDir = Paths.get("C:\\Users\\KH\\Desktop\\Teamtproject\\src\\main\\resources\\static\\images");
              if (!Files.exists(uploadDir)) {
@@ -148,34 +159,34 @@ import jakarta.servlet.http.HttpServletResponse;
              dto.setM_image(filename);
          }
     	
-	    // 비밀번호 암호화
-	    String encodedPassword = passwordEncoder.encode(dto.getM_passwd()); // memberDto에 저장된 m_passwd를 불러와 암호화한 후 'encodedPassword' 변수에 저장
-	    dto.setM_passwd(encodedPassword); // 'encodedPassword' 변수를 memberDto에 m_passwd로 저장
+	    // 鍮꾨�踰덊샇 �븫�샇�솕
+	    String encodedPassword = passwordEncoder.encode(dto.getM_passwd()); // memberDto�뿉 ���옣�맂 m_passwd瑜� 遺덈윭�� �븫�샇�솕�븳 �썑 'encodedPassword' 蹂��닔�뿉 ���옣
+	    dto.setM_passwd(encodedPassword); // 'encodedPassword' 蹂��닔瑜� memberDto�뿉 m_passwd濡� ���옣
 	    
-        dao.updateDao(dto); // dto에 저장된 값을 updateDao 메서드를 통해 최종적으로 DB에 저장
+        dao.updateDao(dto); // dto�뿉 ���옣�맂 媛믪쓣 updateDao 硫붿꽌�뱶瑜� �넻�빐 理쒖쥌�쟻�쑝濡� DB�뿉 ���옣
         
-        return "redirect:myinfo";  // 수정 완료 후 내 정보 보기로 회귀
+        return "redirect:myinfo";  // �닔�젙 �셿猷� �썑 �궡 �젙蹂� 蹂닿린濡� �쉶洹�
     }
     
-	// 회원정보 수정 (관리자용)
+	// �쉶�썝�젙蹂� �닔�젙 (愿�由ъ옄�슜)
     @RequestMapping("/adminUpdate")
     public String adminUpdate(HttpServletRequest request, memberDTO dto) {
 	    
-	    // 비밀번호 암호화
+	    // 鍮꾨�踰덊샇 �븫�샇�솕
 	    String encodedPassword = passwordEncoder.encode(dto.getM_passwd());
 	    dto.setM_passwd(encodedPassword);
 	    
-        dao.updateDao(dto); // memberDto에 저장된 모든 값을 updateDao 메서드를 통해 최종적으로 DB에 저장 
+        dao.updateDao(dto); // memberDto�뿉 ���옣�맂 紐⑤뱺 媛믪쓣 updateDao 硫붿꽌�뱶瑜� �넻�빐 理쒖쥌�쟻�쑝濡� DB�뿉 ���옣 
         
-        return "redirect:/admin/list";  // 수정 완료 후 내 정보 보기로 회귀
+        return "redirect:/admin/list";  // �닔�젙 �셿猷� �썑 �궡 �젙蹂� 蹂닿린濡� �쉶洹�
     }
     
 	
-	//로그인
+	//濡쒓렇�씤
 	@RequestMapping("/login")
 	public String loginForm (memberDTO dto, Model model) {
 		model.addAttribute("dto", dto);
-		return "member/login";
+		return "user/member/login";
 	}
 	
     @RequestMapping("/accessDenied")
@@ -183,82 +194,82 @@ import jakarta.servlet.http.HttpServletResponse;
         return "error/accessDenied";
     }
 
-	// 비밀번호 확인폼 (수정/탈퇴 공용)
+	// 鍮꾨�踰덊샇 �솗�씤�뤌 (�닔�젙/�깉�눜 怨듭슜)
 	@RequestMapping("/passwordCheckForm")
-	// 회원별 비밀 번호 확인을 위해 회원의 고유한 데이터값인 m_no(회원 번호)를 가져오고 회원 정보 수정인지 회원 탈퇴를 할지 (mode)를 결정
+	// �쉶�썝蹂� 鍮꾨� 踰덊샇 �솗�씤�쓣 �쐞�빐 �쉶�썝�쓽 怨좎쑀�븳 �뜲�씠�꽣媛믪씤 m_no(�쉶�썝 踰덊샇)瑜� 媛��졇�삤怨� �쉶�썝 �젙蹂� �닔�젙�씤吏� �쉶�썝 �깉�눜瑜� �븷吏� (mode)瑜� 寃곗젙
 	public String passwordCheckForm(HttpServletRequest request, Model model) {
 		int mno = Integer.parseInt(request.getParameter("m_no"));
-		// <input name = 'm_no'>에 입력된 값(회원 번호)을 'mno'라는 변수에 저장, xml 파일에 'member_seq.nextval'으로 자동 생성
-		String mode = request.getParameter("mode");// <input name = 'mode'>에 입력된 값(update or delete)을 'mode'라는 변수에 저장
+		// <input name = 'm_no'>�뿉 �엯�젰�맂 媛�(�쉶�썝 踰덊샇)�쓣 'mno'�씪�뒗 蹂��닔�뿉 ���옣, xml �뙆�씪�뿉 'member_seq.nextval'�쑝濡� �옄�룞 �깮�꽦
+		String mode = request.getParameter("mode");// <input name = 'mode'>�뿉 �엯�젰�맂 媛�(update or delete)�쓣 'mode'�씪�뒗 蹂��닔�뿉 ���옣
 		
 		model.addAttribute("m_no", mno);
 		model.addAttribute("mode", mode);
-		//비밀번호 확인폼에는 m_no와 mode값이 넘겨져 있음, view에서 type입에 hidden으로 화면상에 출력되지는 않으면서 데이터값을 가져올 수 있게 해줌
+		//鍮꾨�踰덊샇 �솗�씤�뤌�뿉�뒗 m_no�� mode媛믪씠 �꽆寃⑥졇 �엳�쓬, view�뿉�꽌 type�엯�뿉 hidden�쑝濡� �솕硫댁긽�뿉 異쒕젰�릺吏��뒗 �븡�쑝硫댁꽌 �뜲�씠�꽣媛믪쓣 媛��졇�삱 �닔 �엳寃� �빐以�
 		
-		return "member/passwordCheckForm"; // passwordCheckForm 페이지로 회귀
+		return "user/member/passwordCheckForm"; // passwordCheckForm �럹�씠吏�濡� �쉶洹�
 	}
 	
-	// 비밀번호 확인 처리
+	// 鍮꾨�踰덊샇 �솗�씤 泥섎━
 	@RequestMapping("/passwordCheck")
 	public String passwordCheck(HttpServletRequest request,HttpServletResponse response,
 			Authentication authentication,Model model) {
-		// 'Authentication authentication'는 로그인한 사람이 누구인지, 어떤 권한을 가졌는지에 대한 정보를 가지고 있는 객체
+		// 'Authentication authentication'�뒗 濡쒓렇�씤�븳 �궗�엺�씠 �늻援ъ씤吏�, �뼱�뼡 沅뚰븳�쓣 媛�議뚮뒗吏��뿉 ���븳 �젙蹂대�� 媛�吏�怨� �엳�뒗 媛앹껜
 
 	    int m_no = Integer.parseInt(request.getParameter("m_no"));
-	    // model.addAttribute("m_no", mno);로 가져온 회원번호(m_no)를 'm_no'라는 변수에 저장
+	    // model.addAttribute("m_no", mno);濡� 媛��졇�삩 �쉶�썝踰덊샇(m_no)瑜� 'm_no'�씪�뒗 蹂��닔�뿉 ���옣
 	    String mode = request.getParameter("mode");
-	    // model.addAttribute("mode", mode);로 가져온 모드를(mode)를 'mode'라는 변수에 저장
-	    String m_passwd = request.getParameter("m_passwd"); // 사용자가 입력한 m_passwd값을 'm_passwd'라는 변수에 저장
-	    memberDTO dto = dao.getMember(m_no); // 'm_no'라는 변수에 저장된 데이터와 DB에 저장된 m_no가 일치하는 회원의 정보를 memberDTO에 저장 
+	    // model.addAttribute("mode", mode);濡� 媛��졇�삩 紐⑤뱶瑜�(mode)瑜� 'mode'�씪�뒗 蹂��닔�뿉 ���옣
+	    String m_passwd = request.getParameter("m_passwd"); // �궗�슜�옄媛� �엯�젰�븳 m_passwd媛믪쓣 'm_passwd'�씪�뒗 蹂��닔�뿉 ���옣
+	    memberDTO dto = dao.getMember(m_no); // 'm_no'�씪�뒗 蹂��닔�뿉 ���옣�맂 �뜲�씠�꽣�� DB�뿉 ���옣�맂 m_no媛� �씪移섑븯�뒗 �쉶�썝�쓽 �젙蹂대�� memberDTO�뿉 ���옣 
 	    boolean pwdchk = passwordEncoder.matches(m_passwd,dto.getM_passwd());
-	    // memberDTO에 저장된 비밀번호를 get으로 끌고온 후 m_passwd에 저장, 암호화된 비밀번호 데이터가 저장된 변수(passwordEncoder)와 비교 후 'pwdchk'라는 변수에 저장
-	    //일치하면 true, 불일치면 false   
+	    // memberDTO�뿉 ���옣�맂 鍮꾨�踰덊샇瑜� get�쑝濡� �걣怨좎삩 �썑 m_passwd�뿉 ���옣, �븫�샇�솕�맂 鍮꾨�踰덊샇 �뜲�씠�꽣媛� ���옣�맂 蹂��닔(passwordEncoder)�� 鍮꾧탳 �썑 'pwdchk'�씪�뒗 蹂��닔�뿉 ���옣
+	    //�씪移섑븯硫� true, 遺덉씪移섎㈃ false   
 	    
-	    if (pwdchk) { // 만약 비교한 값이 일치한다면
+	    if (pwdchk) { // 留뚯빟 鍮꾧탳�븳 媛믪씠 �씪移섑븳�떎硫�
 
-	        if (mode.equals("update")) { // 'mode' 변수가 update라면
+	        if (mode.equals("update")) { // 'mode' 蹂��닔媛� update�씪硫�
 
-	            // 수정할 회원 정보를 memberDTO에서 가져오기
+	            // �닔�젙�븷 �쉶�썝 �젙蹂대�� memberDTO�뿉�꽌 媛��졇�삤湲�
 	            dto = dao.getMember(m_no); 
 	            model.addAttribute("update", dto); 
 	            
-	            return "member/updateForm";
+	            return "user/member/updateForm";
 	        }
-	        else if (mode.equals("delete")) { // 'mode' 변수가 'delete'라면
+	        else if (mode.equals("delete")) { // 'mode' 蹂��닔媛� 'delete'�씪硫�
 	        	
-	        	// DeleteMemberDAO 메서드를 통해 회원 정보 삭제
+	        	// DeleteMemberDAO 硫붿꽌�뱶瑜� �넻�빐 �쉶�썝 �젙蹂� �궘�젣
 	            dao.DeleteMemberDao(m_no);
-	            if (authentication != null) { // DeleteMemberDAO 메서드 요청을 한 사용자가 식별이 된다면, authentication != null이라면 = 누구인지 알 수 있다면 
+	            if (authentication != null) { // DeleteMemberDAO 硫붿꽌�뱶 �슂泥��쓣 �븳 �궗�슜�옄媛� �떇蹂꾩씠 �맂�떎硫�, authentication != null�씠�씪硫� = �늻援ъ씤吏� �븣 �닔 �엳�떎硫� 
 	                new SecurityContextLogoutHandler() 
-	                	.logout(request, response, authentication); // 강제 로그아웃
+	                	.logout(request, response, authentication); // 媛뺤젣 濡쒓렇�븘�썐
 	            }
-	            return "redirect:/"; // 홈으로 회귀
+	            return "redirect:/"; // �솃�쑝濡� �쉶洹�
 	        }
 	    }
 
-	    model.addAttribute("msg", "비밀번호가 틀렸습니다."); // if문 이외의 경우(pwdchk)값이 false라면 '비밀번호가 틀렸습니다'라는 문구를 'msg'로 보냄
-	    model.addAttribute("m_no", m_no); // 페이지를 다시 방문한 회원의 회원 번호를 가져옴 
-	    model.addAttribute("mode", mode); // 이전에 회원 정보 수정 페이지를 방문했으면 회원 정보 수정 페이지로, 회원 정보 삭제 페이지를 방문했으면 회원 정보 삭제 페이지로
+	    model.addAttribute("msg", "鍮꾨�踰덊샇媛� ���졇�뒿�땲�떎."); // if臾� �씠�쇅�쓽 寃쎌슦(pwdchk)媛믪씠 false�씪硫� '鍮꾨�踰덊샇媛� ���졇�뒿�땲�떎'�씪�뒗 臾멸뎄瑜� 'msg'濡� 蹂대깂
+	    model.addAttribute("m_no", m_no); // �럹�씠吏�瑜� �떎�떆 諛⑸Ц�븳 �쉶�썝�쓽 �쉶�썝 踰덊샇瑜� 媛��졇�샂 
+	    model.addAttribute("mode", mode); // �씠�쟾�뿉 �쉶�썝 �젙蹂� �닔�젙 �럹�씠吏�瑜� 諛⑸Ц�뻽�쑝硫� �쉶�썝 �젙蹂� �닔�젙 �럹�씠吏�濡�, �쉶�썝 �젙蹂� �궘�젣 �럹�씠吏�瑜� 諛⑸Ц�뻽�쑝硫� �쉶�썝 �젙蹂� �궘�젣 �럹�씠吏�濡�
 
-	    return "member/passwordCheckForm"; // 비밀 번호 체크 페이지로 회귀
+	    return "user/member/passwordCheckForm"; // 鍮꾨� 踰덊샇 泥댄겕 �럹�씠吏�濡� �쉶洹�
 	}
 	
-	// 회원 정보 조회
+	// �쉶�썝 �젙蹂� 議고쉶
 	@RequestMapping("/myinfo")
 	public String myinfo(HttpServletRequest request, Model model) {
 
-	    String loginId = request.getUserPrincipal().getName();  //  현재 로그인한 사용자의 로그인 아이디를 'loginId'라는 변수에 저장
+	    String loginId = request.getUserPrincipal().getName();  //  �쁽�옱 濡쒓렇�씤�븳 �궗�슜�옄�쓽 濡쒓렇�씤 �븘�씠�뵒瑜� 'loginId'�씪�뒗 蹂��닔�뿉 ���옣
 
-	    // 로그인한 아이디로 회원 정보 조회
-	    memberDTO dto = dao.getMemberByIdDao(loginId); // getMemberIdDao 메서드로 가져온 loginId라는 변수를 memberDTO에 저장
+	    // 濡쒓렇�씤�븳 �븘�씠�뵒濡� �쉶�썝 �젙蹂� 議고쉶
+	    memberDTO dto = dao.getMemberByIdDao(loginId); // getMemberIdDao 硫붿꽌�뱶濡� 媛��졇�삩 loginId�씪�뒗 蹂��닔瑜� memberDTO�뿉 ���옣
 	    
-	    model.addAttribute("m_no", dto.getM_no()); // memberDTO에서 m_no를 가져오고
-	    model.addAttribute("member", dto); // 컨트롤러에 있는 dto 객체를JSP에서 ${member}라는 이름으로 사용할 수 있게 가져옴
+	    model.addAttribute("m_no", dto.getM_no()); // memberDTO�뿉�꽌 m_no瑜� 媛��졇�삤怨�
+	    model.addAttribute("member", dto); // 而⑦듃濡ㅻ윭�뿉 �엳�뒗 dto 媛앹껜瑜퍳SP�뿉�꽌 ${member}�씪�뒗 �씠由꾩쑝濡� �궗�슜�븷 �닔 �엳寃� 媛��졇�샂
 
-	    return "member/myinfo"; // 내 정보 보기로 회귀
+	    return "user/member/myinfo"; // �궡 �젙蹂� 蹂닿린濡� �쉶洹�
 	}
 	
-	// 관리자 인증 번호 확인 폼 (비밀 번호 확인과 같은 동작 방식)
+	// 愿�由ъ옄 �씤利� 踰덊샇 �솗�씤 �뤌 (鍮꾨� 踰덊샇 �솗�씤怨� 媛숈� �룞�옉 諛⑹떇)
 	@RequestMapping("/adminCheckForm")
 	public String adminCheckForm(HttpServletRequest request,Model model) {
 	        
@@ -271,7 +282,7 @@ import jakarta.servlet.http.HttpServletResponse;
 	    return "admin/adminCheckForm";
 	}
 	
-	 // 관리자 번호 확인 처리
+	 // 愿�由ъ옄 踰덊샇 �솗�씤 泥섎━
 		@RequestMapping("/adminCheck")
 		public String adminCheck(HttpServletRequest request,HttpServletResponse response,Model model) {
 
@@ -280,9 +291,9 @@ import jakarta.servlet.http.HttpServletResponse;
 	    String mode = request.getParameter("mode");
 	    boolean adminchk = adminCodeValue.equals(inputAdminCode);
 
-	    // 여기서 처음으로 검증
+	    // �뿬湲곗꽌 泥섏쓬�쑝濡� 寃�利�
 		    if (adminchk == true) {
-			    // 인증 성공
+			    // �씤利� �꽦怨�
 			    if ("update".equals(mode)) {
 			        memberDTO dto = dao.getMember(m_no);
 			        model.addAttribute("adminUpdate", dto);
@@ -292,7 +303,7 @@ import jakarta.servlet.http.HttpServletResponse;
 			        return "redirect:/admin/list";
 			    }
 		    }else {
-		        model.addAttribute("msg", "관리자 인증키가 틀렸습니다.");
+		        model.addAttribute("msg", "愿�由ъ옄 �씤利앺궎媛� ���졇�뒿�땲�떎.");
 		        model.addAttribute("m_no", m_no);
 		        model.addAttribute("mode", mode);
 		        return "admin/adminCheckForm";
@@ -301,18 +312,69 @@ import jakarta.servlet.http.HttpServletResponse;
 		    return "redirect:/admin/list";
 		}
 		
-		// 아이디 확인
-		@ResponseBody // 문자열 그대로 출력 어노테이션
+		// �븘�씠�뵒 �솗�씤
+		@ResponseBody // 臾몄옄�뿴 洹몃�濡� 異쒕젰 �뼱�끂�뀒�씠�뀡
 		@GetMapping("/idCheck")
-		public String idCheck(@RequestParam("m_id") String m_id) { // 사용자가 m_id값을 입력하고 서버에 요청을 보내면 'm_id'라는 변수에 저장해주세욥
+		public String idCheck(@RequestParam("m_id") String m_id) { // �궗�슜�옄媛� m_id媛믪쓣 �엯�젰�븯怨� �꽌踰꾩뿉 �슂泥��쓣 蹂대궡硫� 'm_id'�씪�뒗 蹂��닔�뿉 ���옣�빐二쇱꽭�슖
 
 		    int cnt = dao.idCheck(m_id); 
-		    // idCheckDAO 메서드(select count(*) from member where m_id = #{m_id})를 실행하여
-		    // 사용자가 입력한 m_id데이터와 같은 m_id열의 데이터 개수를 'cnt'라는 변수에 저장한다
+		    // idCheckDAO 硫붿꽌�뱶(select count(*) from member where m_id = #{m_id})瑜� �떎�뻾�븯�뿬
+		    // �궗�슜�옄媛� �엯�젰�븳 m_id�뜲�씠�꽣�� 媛숈� m_id�뿴�쓽 �뜲�씠�꽣 媛쒖닔瑜� 'cnt'�씪�뒗 蹂��닔�뿉 ���옣�븳�떎
 
-		    if (cnt > 0) { // 개수가 0보다 많으면
-		        return "DUPLICATE";   // 이미 존재
+		    if (cnt > 0) { // 媛쒖닔媛� 0蹂대떎 留롮쑝硫�
+		        return "DUPLICATE";   // �씠誘� 議댁옱
 		    }
-		    return "OK";             // 아니면 사용 가능
+		    return "OK";             // �븘�땲硫� �궗�슜 媛��뒫
 		}
-}
+		
+
+		// 아이디 찾기
+		@PostMapping("/findId")
+		public String findIdByEmail(@RequestParam("m_email") String m_email, Model model) {
+
+		    List<memberDTO> list = dao.findAllByEmail(m_email);
+
+		    if (list.isEmpty()) {
+		        model.addAttribute("msg", "해당 이메일로 가입된 계정이 없습니다.");
+		        return "user/member/findIdForm";
+		    }
+
+		    // 사용자님이 하셨던 *** 마스킹 처리 로직
+		    for (memberDTO m : list) {
+		        String rawId = m.getM_id();
+		        // 여기서 바로 마스킹해서 리스트에 다시 세팅하셨죠
+		        m.setM_id(rawId.substring(0, 3) + "***"); 
+		    }
+
+		    model.addAttribute("idList", list);
+		    // [중요] JSP의 c:if 조건을 위해 필요한 변수
+		    model.addAttribute("foundId", true); 
+
+		    return "user/member/findIdForm";
+		}
+
+		@PostMapping("/resetPassword")
+		public String resetPassword(@RequestParam("m_id") String m_id,HttpSession session,Model model) {
+
+		    memberDTO dto = dao.getMemberByIdDao(m_id);
+
+		    if (dto == null) {
+		        model.addAttribute("msg", "아이디가 존재하지 않습니다.");
+		        return "user/member/resetPassword";
+		    }
+
+		    //  아이디를 세션에 저장
+		    session.setAttribute("resetId", m_id);
+
+		    // 임시 비밀번호 생성
+		    String tempPw = UUID.randomUUID().toString().substring(0, 8);
+		    String encoded = passwordEncoder.encode(tempPw);
+
+		    dao.updatePassword(m_id, encoded);
+
+		    // 임시 비번도 세션에 저장
+		    session.setAttribute("tempPw", tempPw);
+
+		    return "redirect:/resultPassword";
+		}
+	}
