@@ -1,2 +1,1 @@
-# greentable
-greentable
+건강 식단 레시피 및 재료 구매 플랫폼

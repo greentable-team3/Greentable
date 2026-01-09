@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.greentable.DAO.questionDAO">
+
+    <!-- 목록 -->
+    <select id="questionlistDao"
+            resultType="com.greentable.DTO.questionDTO">
+        SELECT *
+        FROM question
+        ORDER BY q_no DESC
+    </select>
+
+    <!-- 등록 -->
+    <insert id="questioninsertDao"
+            parameterType="com.greentable.DTO.questionDTO">
+        INSERT INTO question
+        (q_no,q_category,q_secret,q_title,q_content,q_img,m_no)
+        VALUES
+        (question_seq.NEXTVAL,#{q_category},NVL(#{q_secret, jdbcType=VARCHAR}, '미승인'),#{q_title},#{q_content},#{q_img},#{m_no})
+    </insert>
+
+    <!-- 삭제 -->
+    <delete id="questionDeleteDao"
+            parameterType="int">
+        DELETE
+        FROM question
+        WHERE q_no = #{q_no}
+    </delete>
+
+    <!-- 수정 -->
+    <update id="questionUpdateDao"
+            parameterType="com.greentable.DTO.questionDTO">
+        UPDATE question
+        SET
+            q_category = #{q_category},
+            q_secret   = #{q_secret},
+            q_title    = #{q_title},
+            q_content  = #{q_content},
+            q_img      = #{q_img}
+        WHERE q_no = #{q_no}
+    </update>
+
+    <!-- 상세 -->
+    <select id="questionDetailDao"
+            parameterType="int"
+            resultType="com.greentable.DTO.questionDTO">
+        SELECT q_no,q_category,q_secret,q_title,q_content,q_img,m_no
+        FROM question
+        WHERE q_no = #{q_no}
+    </select>
+
+</mapper>

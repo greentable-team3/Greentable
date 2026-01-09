@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.greentable.DAO.communityDAO">
+
+    <!-- 목록 -->
+    <select id="communitylistDao"
+            resultType="com.greentable.DTO.communityDTO">
+        SELECT *
+        FROM community
+        ORDER BY c_no DESC
+    </select>
+
+    <!-- 등록 -->
+    <insert id="communityinsertDao"
+            parameterType="com.greentable.DTO.communityDTO">
+        INSERT INTO community
+        (c_no,c_category, c_title,c_content,c_img,c_love,m_no,c_comment)
+        VALUES
+        (community_seq.NEXTVAL,#{c_category},#{c_title},#{c_content},#{c_img},#{c_love},#{m_no},#{c_comment})
+    </insert>
+
+    <!-- 삭제 -->
+    <delete id="communityDeleteDao" parameterType="int">
+        DELETE FROM community WHERE c_no = #{c_no}
+    </delete>
+
+    <!-- 수정 -->
+    <update id="communityUpdateDao"
+            parameterType="com.greentable.DTO.communityDTO">
+        UPDATE community
+        SET
+            c_category = #{c_category},
+            c_title    = #{c_title},
+            c_content  = #{c_content},
+            c_img      = #{c_img}
+        WHERE c_no = #{c_no}
+    </update>
+
+    <!-- 상세 -->
+    <select id="communityDetailDao"
+            parameterType="int"
+            resultType="com.greentable.DTO.communityDTO">
+        SELECT *
+        FROM community
+        WHERE c_no = #{c_no}
+    </select>
+
+</mapper>
