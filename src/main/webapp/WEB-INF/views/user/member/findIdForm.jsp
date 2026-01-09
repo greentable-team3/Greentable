@@ -41,12 +41,12 @@
 		        </div>
 		    </c:forEach>
 		
-		    <form action="/resetPassword" method="post">
+		    <form action="/resetPasswordForm" method="post">
 		        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		        
 		        <input type="hidden" name="m_id" value="${realId}">
 		        
-		        <button type="submit" class="btn btn-danger w-100">
+		        <button type="button" class="btn btn-danger w-100" onclick = "location.href='/resetPasswordForm'">
 		            비밀번호 재설정
 		        </button>
 		    </form>

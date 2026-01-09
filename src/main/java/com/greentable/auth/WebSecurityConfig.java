@@ -25,7 +25,7 @@ public class WebSecurityConfig {
 			.authorizeHttpRequests(request -> request
 					.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 					.requestMatchers("/","/main","/write","/login","/updateForm","/signup","/passwordCheckForm","/findIdForm","/findId",
-							"/idCheck","/resetPassword","/resultPassword","/css/**","/js/**","/images/**","/user/**").permitAll()
+							"/idCheck","/resetPasswordForm","/resetPassword","/resultPassword","/css/**","/js/**","/images/**","/user/**").permitAll()
 					.requestMatchers("/admin/**").hasAnyRole("ADMIN")
 			);
 		

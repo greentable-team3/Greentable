@@ -352,19 +352,23 @@ import jakarta.servlet.http.HttpSession;
 
 		    return "user/member/findIdForm";
 		}
+		
+		@RequestMapping("/resetPasswordForm")
+		public String resetpasswordForm() {
+			return "user/member/resetPasswordForm";
+		}
 
 		@PostMapping("/resetPassword")
 		public String resetPassword(@RequestParam("m_id") String m_id,HttpSession session,Model model,HttpServletRequest request) {
 				
 		    memberDTO dto = dao.getMemberByIdDao(m_id);
 
-
 		    if (dto == null) {
 		        model.addAttribute("msg", "아이디가 존재하지 않습니다.");
-		        return "user/member/resetPassword";
+		        return "user/member/resetPasswordForm";
 		    }
 
-		    //  아이디를 세션에 저장
+		    // 아이디를 세션에 저장
 		    session.setAttribute("resetId", m_id);
 
 		    // 임시 비밀번호 생성
@@ -379,7 +383,7 @@ import jakarta.servlet.http.HttpSession;
 		    return "redirect:/resultPassword";
 		}
 		
-		@PostMapping("/resultPassword")
+		@GetMapping("/resultPassword")
 		public String resultPassword() {
 			return "user/member/resultPassword";
 		}
