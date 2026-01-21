@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.greentable.DAO.memberDAO">
+    <select id="getMember" parameterType="int" resultType="com.greentable.DTO.memberDTO">
+        SELECT * FROM member WHERE m_no = #{m_no}
+    </select>
+	<select id="listDao" resultType="com.greentable.DTO.memberDTO">
+		select * from member
+	</select>
+	<insert id="SignupDao">
+		insert into member (m_no,m_id,m_passwd,m_name,m_nickname,m_addr,m_date,m_bir,m_authority,m_tel,m_email,m_image)
+			values (member_seq.nextval,#{m_id},#{m_passwd},#{m_name},#{m_nickname},#{m_addr},SYSDATE,#{m_bir, jdbcType=DATE},#{m_authority},#{m_tel},#{m_email},#{m_image, jdbcType=VARCHAR})<!--jdbcType=VARCHAR으로 프로필 이미지를 업로드하지 않을 때는 null로 처리 -->
+	</insert>
+	<update id="updateDao">
+		update member set m_name=#{m_name},m_nickname=#{m_nickname},m_passwd=#{m_passwd},m_addr=#{m_addr},m_bir=#{m_bir, jdbcType=DATE},m_tel=#{m_tel},m_email=#{m_email},m_image=#{m_image, jdbcType=VARCHAR}
+		where m_no=#{m_no}
+	</update>
+	<delete id="DeleteMemberDao">
+		delete from member where m_no=#{param1}
+	</delete> 
+	<select id="findByMid" resultType="com.greentable.DTO.memberDTO">
+		select * from member where m_id=#{m_id}
+	</select>
+	<select id="getMemberByIdDao" resultType="com.greentable.DTO.memberDTO">
+    	select * from member where m_id = #{m_id}
+	</select>
+	<select id="idCheck" parameterType="String" resultType="int">
+	    select count(*) from member where m_id = #{m_id}
+	</select>
+	<select id="findAllByEmail" resultType="com.greentable.DTO.memberDTO" parameterType="java.lang.String">
+    	select * FROM member where m_email = #{m_email}
+	</select>
+	<update id="updatePassword">
+    	update member SET m_passwd = #{m_passwd} where m_id = #{m_id}
+	</update>
+	<insert id="kakaoSignup">
+		INSERT INTO member (m_no,m_id,m_passwd,m_name,m_nickname,m_addr,m_email,m_tel,m_date,m_authority,m_image)
+			VALUES (member_seq.nextval,#{m_id},'OAUTH2_USER',#{m_name},#{m_nickname},'주소미입력',#{m_email},'010-0000-0000',SYSDATE,'KAKAO',#{m_image})
+	</insert>
+</mapper>

@@ -1,45 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper 
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.greentable.DAO.basketDAO">
-	<select id="blistDao" resultType="com.greentable.DTO.basketDTO">
-		select b_no,i_name, i_price, b_count, (i_price * b_count) as b_sumprice from basket
-		WHERE m_no = #{m_no}
-	</select>
-	<select id="beditDao" resultType="com.greentable.DTO.basketDTO">
-		select * from basket where b_no=#{param1}
-	</select>
-	<update id="bupdateDao">
-		update basket set b_count=#{b_count}
-		where b_no=#{b_no}
-	</update>
-	<delete id="bdeleteDao">
-		delete from basket where b_no = #{param1}
-	</delete>
-	<insert id="binsertDao">
-	    INSERT INTO basket (b_no, f_no, i_no, b_count, i_price, i_name, b_sumprice, m_no)
-	    SELECT 
-	        basket_seq.NEXTVAL, 
-	        fi.f_no, 
-	        fi.i_no, 
-	        #{b_count}, 
-	        i.i_price, 
-	        i.i_name,
-	        (i.i_price * #{b_count}),
-	        #{m_no}
-	    FROM 
-	        food_ingredients fi  JOIN 
-	        ingredients i ON fi.i_no = i.i_no
-	    WHERE 
-	        fi.f_no = #{f_no} AND fi.i_no = #{i_no}
-	</insert>
-	
+   <select id="blistDao" resultType="com.greentable.DTO.basketDTO">
+      select b_no,i_name, i_price, b_count, (i_price * b_count) as b_sumprice from basket
+      WHERE m_no = #{m_no, jdbcType=INTEGER}
+   </select>
+   <select id="beditDao" resultType="com.greentable.DTO.basketDTO">
+      select * from basket where b_no=#{param1}
+   </select>
+   <update id="bupdateDao">
+      update basket set b_count=#{b_count}
+      where b_no=#{b_no}
+   </update>
+   <delete id="bdeleteDao">
+      delete from basket where b_no = #{param1}
+   </delete>
+   <insert id="binsertDao">
+    MERGE INTO basket b
+    USING (
+        SELECT 
+            fi.f_no, 
+            fi.i_no, 
+            i.i_price, 
+            i.i_name,
+            #{m_no} as m_no
+        FROM 
+            food_ingredients fi 
+        JOIN 
+            ingredients i ON fi.i_no = i.i_no
+        WHERE 
+            fi.f_no = #{f_no} AND fi.i_no = #{i_no}
+    ) val
+    ON (b.m_no = val.m_no AND b.f_no = val.f_no AND b.i_no = val.i_no)
+    
+    WHEN MATCHED THEN
+        UPDATE SET 
+            b.b_count = b.b_count + #{b_count},
+            b.b_sumprice = (b.b_count + #{b_count}) * val.i_price
+            
+    WHEN NOT MATCHED THEN
+        INSERT (b_no, f_no, i_no, b_count, i_price, i_name, b_sumprice, m_no)
+        VALUES (basket_seq.NEXTVAL, val.f_no, val.i_no, #{b_count}, val.i_price, val.i_name, (val.i_price * #{b_count}), val.m_no)
+   </insert>
 </mapper>
-
-
-
-
-
-
 

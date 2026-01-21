@@ -1,45 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper 
-	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.greentable.DAO.ordersDAO">
-	<select id="olistDao" resultType="com.greentable.DTO.ordersDTO">
-		select * from orders
-	</select>
-	<insert id="oinsertDao">
-    INSERT INTO orders (o_no, o_name, o_total, o_fee, o_tel, o_addr, o_detail, m_no, b_no)
-    SELECT 
-        orders_seq.nextval, 
-        #{dto.o_name}, 
-        NVL((SELECT SUM(b_sumprice) FROM basket WHERE b_no IN 
-            <foreach collection="b_no_list" item="id" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
-        ), 0) + 
-        (CASE WHEN NVL((SELECT SUM(b_sumprice) FROM basket WHERE b_no IN 
-            <foreach collection="b_no_list" item="id" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
-        ), 0) >= 15000 THEN 0 ELSE 3000 END),
-        
-        (CASE WHEN NVL((SELECT SUM(b_sumprice) FROM basket WHERE b_no IN 
-            <foreach collection="b_no_list" item="id" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
-        ), 0) >= 15000 THEN 0 ELSE 3000 END),
-        
-        #{dto.o_tel}, #{dto.o_addr}, #{dto.o_detail}, 
-        
-        (SELECT m_no FROM basket WHERE b_no = TO_NUMBER(#{b_no_list[0]})),
-        
-        TO_NUMBER(#{b_no_list[0]})
-    FROM DUAL
-	</insert>
-	<delete id="basketdeleteDao">
+   <select id="olistDao" resultType="com.greentable.DTO.ordersDTO">
+    SELECT * FROM orders
+    <where>
+        <if test="m_no != 1">
+            AND m_no = #{m_no}
+        </if>
+    </where>
+    ORDER BY o_no DESC
+   </select>
+   
+   <select id="getCartCount" resultType="int">
+    SELECT COUNT(*) FROM basket WHERE m_no = #{m_no}
+   </select>
+   
+   <select id="getBasketSelectTotal" resultType="int">
+    SELECT NVL(SUM(i_price * b_count), 0)
+    FROM basket
+    WHERE b_no IN 
+    <foreach collection="b_no_list" item="id" open="(" close=")" separator=",">
+        #{id}
+    </foreach>
+   </select>
+   
+   <select id="getOrderMaster" resultType="com.greentable.DTO.ordersDTO">
+    SELECT * FROM orders WHERE o_no = #{o_no}
+   </select>
+   
+   <select id="getOrderDetailList" resultType="com.greentable.DTO.orderDetailDTO">
+    SELECT * FROM order_detail WHERE o_no = #{o_no}
+   </select>
+   
+   <insert id="oinsertDao">
+    INSERT INTO orders (
+        o_no, o_name, o_total, o_fee, o_tel, o_addr, o_detail, m_no, 
+        o_status, o_delivery_no, o_pay_tid, o_pay_method
+    )
+    VALUES (
+        orders_seq.nextval, #{dto.o_name}, #{dto.o_total}, #{dto.o_fee}, 
+        #{dto.o_tel}, #{dto.o_addr}, #{dto.o_detail}, #{dto.m_no},
+        '결제완료', 'DLV' || delivery_seq.nextval, #{dto.o_pay_tid}, #{dto.o_pay_method}
+    )
+    <selectKey keyProperty="dto.o_no" resultType="int" order="AFTER">
+        SELECT orders_seq.currval FROM DUAL
+    </selectKey>
+   </insert>
+   
+    <insert id="odinsertDao">
+        INSERT INTO order_detail (od_no, o_no, i_name, i_price, b_count)
+        SELECT order_detail_seq.NEXTVAL, #{o_no}, i_name, i_price, b_count
+        FROM basket
+        WHERE b_no IN 
+        <foreach collection="b_no_list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </insert>
+    
+    <update id="updateStatus">
+    UPDATE orders SET 
+        o_status = #{status}
+        <if test="status == '구매확정'">, o_confirm_date = SYSDATE</if>
+        <if test="status == '배송완료'">, o_delivery_date = SYSDATE</if>
+    WHERE o_no = #{o_no}
+   </update>
+   
+   <update id="updateAutoConfirm">
+    UPDATE orders SET o_status = '구매확정', o_confirm_date = SYSDATE
+    WHERE o_status = '배송완료' AND o_delivery_date &lt;= SYSDATE - 7
+   </update>
+   
+   <delete id="basketdeleteDao">
     DELETE FROM basket 
     WHERE b_no IN 
     <foreach item="id" collection="b_no_list" open="(" separator="," close=")">
         #{id}
     </foreach>
-</delete>
+   </delete>
+   
+   <insert id="insertOrderRequest">
+    INSERT INTO return_exchange (r_no, o_no, r_type, r_reason, r_img, r_status, r_date)
+    VALUES (return_exchange_seq.NEXTVAL, #{o_no}, #{r_type}, #{r_reason, jdbcType=VARCHAR}, #{r_img, jdbcType=VARCHAR}, '접수완료', SYSDATE)
+   </insert>
+   
+   <select id="getOrderRequest" resultType="com.greentable.DTO.orderRequestDTO">
+    SELECT * FROM return_exchange WHERE o_no = #{o_no}
+   </select>
 </mapper>

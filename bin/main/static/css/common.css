@@ -1,0 +1,218 @@
+/* Greentable 공통 스타일 */
+body { font-family: 'Malgun Gothic', sans-serif; background-color: #f8f9f8; margin: 0; color: #333; }
+.card, .btn, .form-control, .form-select { border-radius: 0 !important; }
+
+/* 헤더 & 로고 */
+.top-header { padding: 30px 0; background-color: #fff; border-bottom: 1px solid #eee; }
+.brand-logo { height: 90px; width: auto; object-fit: contain; }
+
+/* 검색창 디자인 */
+.search-container { max-width: 650px; width: 100%; margin: 0 40px; }
+.search-bar { border: 2px solid #198754; height: 52px; display: flex; align-items: center; background: #fff; }
+.search-bar .form-select { width: 110px; border: none; font-weight: bold; background-color: #f8f9fa; height: 100%; border-right: 1px solid #eee !important; }
+.search-bar .form-control { border: none; box-shadow: none; font-size: 1.05rem; padding-left: 20px; height: 100%; }
+.search-bar .btn-search { background: transparent; color: #198754; border: none; font-size: 1.6rem; padding: 0 20px; height: 100%; }
+
+/* 우측 유저 메뉴 */
+.user-nav { display: flex; align-items: center; gap: 25px; font-size: 0.85rem; color: #555; min-width: 220px; justify-content: flex-end; }
+.user-nav a { text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.user-nav i { font-size: 1.6rem; color: #333; }
+
+/* 네비게이션(GNB) */
+.gnb-wrap { border-top: 1px solid #eee; border-bottom: 2px solid #198754; background: #fff; z-index: 1000; }
+.gnb-container { display: flex; align-items: center; height: 60px; }
+.nav-links { display: flex; align-items: center; gap: 45px; } 
+.nav-links a { text-decoration: none; color: #333; font-weight: 700; font-size: 1.05rem; transition: 0.2s; }
+.nav-links a:hover { color: #198754; }
+
+/* 1. row의 기본 '늘리기(stretch)' 속성을 해제 */
+.row.align-items-start {
+    align-items: flex-start !important;
+}
+
+/* 2. 카드가 옆 카드 높이를 무시하고 자기 내용만큼만 보이게 함 */
+.card {
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 3. 버튼 아래 여백 최소화 */
+.card-body {
+    padding-bottom: 12px !important; 
+    flex: none !important; /* 높이 확장 방지 */
+}
+
+/* 1. row 안의 col들이 높이를 꽉 채우지 않도록 설정 */
+.row.align-items-start > .col {
+    display: flex;
+    align-items: flex-start; /* 칸 안에서 카드를 위로 밀착 */
+}
+
+/* 2. 카드가 부모 높이를 무시하고 자기 내용만큼만 그려지게 함 */
+.card {
+    width: 100%;
+    height: auto !important; /* 높이 100% 해제 */
+    flex: none !important;    /* 늘어나려는 성질 제거 */
+}
+
+/* 3. 버튼 밑에 하얀 여백이 남지 않게 바디 간격 조정 */
+.card-body {
+    padding-bottom: 15px !important; 
+}
+
+/* 메인 그리드 설정: 다단 레이아웃 (Pinterest 스타일) */
+.masonry-grid {
+    column-count: 3; /* 기본 3열 */
+    column-gap: 20px;
+}
+
+/* 개별 아이템 설정 */
+.menu-item {
+    display: inline-block; /* 흐름을 깨지 않게 설정 */
+    width: 100%;
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    transition: transform 0.3s;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+}
+
+/* 이미지 박스 */
+.menu-img-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 정보 박스: 버튼 아래 여백을 없앰 */
+.menu-info-box {
+    padding: 15px;
+}
+
+.menu-info-box h5 {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+/* ===============================
+   CTA + 캐릭터 애니메이션
+================================ */
+
+/* CTA 위치 */
+.signup-cta {
+    position: absolute;
+    top: 60%;
+    right: 12%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    z-index: 20;
+}
+
+/* 버튼 (마지막 등장) */
+.signup-btn {
+    font-size: 1.15rem;
+    padding: 14px 40px;
+    border-radius: 40px;
+    position: relative;
+    z-index: 5;
+
+    opacity: 0;
+    transform: scale(0.6);
+    animation: buttonPop 0.6s ease-out forwards;
+    animation-delay: 1.8s;
+}
+
+/* 캐릭터 공통 */
+.character {
+    position: absolute;
+    width: 160px; /* ★ 크기 */
+    opacity: 0;
+    transform: translateY(40px) scale(0.8);
+}
+
+.character img {
+    width: 100%;
+    height: auto;
+}
+
+/* 캐릭터 위치 + 애니메이션 */
+.char-hong {
+    left: -190px;
+    bottom: 0;
+    animation:
+        popUp 0.6s ease-out forwards,
+        softBounce 2.4s ease-in-out infinite;
+    animation-delay: 0.2s, 1.2s;
+}
+
+.char-cha {
+    left: -95px;
+    bottom: 100px;
+    animation:
+        popUp 0.6s ease-out forwards,
+        softBounce 2.6s ease-in-out infinite;
+    animation-delay: 0.6s, 1.6s;
+}
+
+.char-bro {
+    right: -150px;
+    bottom: 50px;
+    animation:
+        popUp 0.6s ease-out forwards,
+        softBounce 2.8s ease-in-out infinite;
+    animation-delay: 1s, 2s;
+}
+
+/* ===============================
+   애니메이션 정의
+================================ */
+
+/* 등장 */
+@keyframes popUp {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.8);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-12px) scale(1.06);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 통통 튐 (idle) */
+@keyframes softBounce {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-10px) scale(1.04);
+    }
+}
+
+/* 버튼 강조 */
+@keyframes buttonPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    70% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

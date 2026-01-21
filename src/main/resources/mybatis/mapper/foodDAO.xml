@@ -10,7 +10,19 @@
 	            AND f_kind = #{f_kind}
 	        </if>
 	    </where>
-	    ORDER BY f_no DESC
+	    ORDER BY f_no asc
+	</select>
+	<select id="searchFoodDao" resultType="com.greentable.DTO.foodDTO">
+	   SELECT 
+	       f_no, f_name, f_imgfilename, f_add, f_love
+	   FROM food
+	   <where>
+	       <if test="searchType != null and searchType != '' and keyword != null and keyword != ''">
+	           AND REPLACE(${searchType}, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	       </if>
+	   </where>
+	   /* 순수하게 랜덤으로만 정렬 */
+   		ORDER BY DBMS_RANDOM.VALUE
 	</select>
 	<select id="feditDao" resultType="com.greentable.DTO.foodDTO">
 		select * from food where f_no=#{param1}

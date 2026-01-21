@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.greentable.DAO.communityDAO">
+
+<select id="communitylistdao" resultType="com.greentable.DTO.communityDTO">
+    SELECT * FROM community
+    <where>
+        <if test="c_category != null and c_category != ''">
+            AND c_category = #{c_category}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (c_title LIKE '%' || #{keyword} || '%' OR c_content LIKE '%' || #{keyword} || '%')
+        </if>
+    </where>
+    ORDER BY CASE WHEN c_category = '공지사항' THEN 0 ELSE 1 END, c_no DESC
+</select>
+
+<select id="getLatestNotice" resultType="com.greentable.DTO.communityDTO">
+    SELECT * FROM (
+        SELECT * FROM community 
+        WHERE TRIM(c_category) = '공지사항' 
+        ORDER BY c_no DESC
+    ) WHERE ROWNUM = 1
+</select>
+    
+    <select id="communitydetailDao" resultType="com.greentable.DTO.communityDTO">
+        SELECT * FROM community WHERE c_no = #{c_no}
+    </select>
+    
+    <insert id="communityinsertDao">
+        INSERT INTO community (c_no, c_category, c_title, c_content, c_img, c_love, m_no)
+        VALUES (community_seq.NEXTVAL, #{c_category}, #{c_title}, #{c_content}, #{c_img, jdbcType=VARCHAR}, 0, #{m_no})
+    </insert>
+
+    <insert id="commentWriteDao">
+        INSERT INTO comments (c_commentNo, c_no, m_no, c_commentContent, c_commentdate)
+        VALUES (comments_seq.NEXTVAL, #{c_no}, #{m_no}, #{c_commentContent}, SYSDATE)
+    </insert>
+
+    <update id="communityupdateDao">
+        UPDATE community 
+        SET c_category = #{c_category}, c_title = #{c_title}, c_content = #{c_content}
+        <if test="c_img != null">, c_img = #{c_img}</if>
+        WHERE c_no = #{c_no}
+    </update>
+
+    <update id="communityupdateLoveDao">
+        UPDATE community SET c_love = c_love + 1 WHERE c_no = #{c_no}
+    </update>
+
+    <select id="communityLoveDao" resultType="int">
+        SELECT c_love FROM community WHERE c_no = #{c_no}
+    </select>
+
+    <select id="communityListDao" resultType="com.greentable.DTO.communityDTO">
+        SELECT * FROM comments WHERE c_no = #{c_no} ORDER BY c_commentdate ASC
+    </select>
+
+    <select id="allCommentListDao" resultType="com.greentable.DTO.communityDTO">
+        SELECT * FROM comments ORDER BY c_commentdate DESC
+    </select>
+
+    <delete id="communityDeleteDao">
+        DELETE FROM community WHERE c_no = #{c_no}
+    </delete>
+
+    <delete id="commentDeleteDao">
+        DELETE FROM comments WHERE c_commentNo = #{c_commentNo}
+    </delete>
+
+    <delete id="commentDeleteByPostDao">
+        DELETE FROM comments WHERE c_no = #{c_no}
+    </delete>
+ 
+    <select id="communityadminuserlistdao" resultType="com.greentable.DTO.communityDTO">
+    SELECT * FROM community 
+    ORDER BY CASE WHEN c_category = '공지사항' THEN 0 ELSE 1 END, 
+             c_no DESC
+</select>
+
+</mapper>

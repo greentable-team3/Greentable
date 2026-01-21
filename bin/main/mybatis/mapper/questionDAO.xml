@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.greentable.DAO.questionDAO">
+
+    <insert id="questioninsertdao">
+        INSERT INTO question (
+            q_no, q_category, q_secret, q_title, q_content, q_img, m_no
+        ) VALUES (
+            question_seq.NEXTVAL, 
+            #{q_category},
+             
+            #{q_secret}, 
+            #{q_title}, 
+            #{q_content}, 
+            #{q_img, jdbcType=VARCHAR}, 
+            #{m_no}
+        )
+    </insert>
+
+    <select id="questionlistdao" resultType="com.greentable.DTO.questionDTO">
+        SELECT * FROM question ORDER BY q_no DESC
+    </select>
+
+    <select id="questiondetaildao" resultType="com.greentable.DTO.questionDTO">
+        SELECT * FROM question WHERE q_no = #{q_no}
+    </select>
+
+    <update id="questionupdatedao">
+        UPDATE question 
+        SET q_category = #{q_category}, 
+           q_secret = #{q_secret, jdbcType=VARCHAR},
+            q_title = #{q_title}, 
+            q_content = #{q_content}, 
+            q_img = #{q_img, jdbcType=VARCHAR}
+        WHERE q_no = #{q_no} AND m_no = #{m_no}
+    </update>
+
+    <delete id="questiondeletedao">
+        DELETE FROM question WHERE q_no = #{q_no} AND m_no = #{m_no}
+    </delete>
+
+    <update id="updateAnswer">
+        UPDATE question 
+        SET q_answer = #{q_answer},
+            q_answerDate = SYSDATE 
+        WHERE q_no = #{q_no}
+    </update>
+
+    <select id="questionselectlistdao" resultType="com.greentable.DTO.questionDTO">
+        SELECT * FROM question
+        WHERE 1=1
+        <if test="q_category != null and q_category != ''">
+            AND q_category = #{q_category}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (q_title LIKE '%' || #{keyword} || '%' OR q_content LIKE '%' || #{keyword} || '%')
+        </if>
+        ORDER BY q_no DESC
+    </select>
+
+    <delete id="adminQuestionDelete">
+        DELETE FROM question WHERE q_no = #{q_no}
+    </delete>
+
+</mapper>

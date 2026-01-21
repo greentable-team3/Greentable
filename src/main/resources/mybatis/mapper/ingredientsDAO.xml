@@ -4,7 +4,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.greentable.DAO.ingredientsDAO">
 	<select id="ilistDao" resultType="com.greentable.DTO.ingredientsDTO">
-		select * from ingredients
+		select * from ingredients order by i_name asc
 	</select>
 	<select id="ieditlistDao" resultType="com.greentable.DTO.ingredientsDTO">
 		select * from ingredients where i_no=#{param1}

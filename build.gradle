@@ -43,7 +43,18 @@ dependencies {
 	implementation 'org.glassfish:jakarta.el:4.0.2'
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
-	
+	/* === Security === */
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-taglibs:6.2.3'
+    testImplementation 'org.springframework.security:spring-security-test'
+    /* === Test === */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    /* === 카카오 간편 회원 가입에 꼭 필요한 라이브러리 === */
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    /* === 이메일 인증 === */    
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	
 }
 

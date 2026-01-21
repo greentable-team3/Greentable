@@ -13,4 +13,12 @@ public class ordersDTO {
 	private String o_detail;
 	private int b_no;
 	private Integer m_no;
+	
+	// 추가 필드
+    private String o_status;
+    private String o_delivery_no;
+    private java.sql.Date o_delivery_date;
+    private java.sql.Date o_confirm_date;
+    private String o_pay_tid;
+    private String o_pay_method;
 }
